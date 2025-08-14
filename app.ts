@@ -3,11 +3,13 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import route from './routes/blogRoutes';
+import cors from 'cors'
 
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 const uri = process.env.MONGO_URL || '';
 const PORT = process.env.PORT || 5000;
