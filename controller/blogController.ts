@@ -49,6 +49,22 @@ export const getBlogsById = async (req: Request, res: Response) => {
     }
 };
 
+export const getBlog = async (req: Request, res: Response) => {
+    try {
+        const  id  = req.params.id;
+        const blogexist = await Blog.findById(id);
+        if (!blogexist) {
+            return res.status(400).json({ error: "blog post not found" });
+        }
+
+        res.status(200).json(blogexist);
+
+    } catch (err) {
+        console.error("Error fetching blog:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+};
+
 export const updateBlogsById = async (req: Request, res: Response) => {
     try {
         const id  = req.params.id;
