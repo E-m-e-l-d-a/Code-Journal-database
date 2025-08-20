@@ -10,22 +10,21 @@ export const create = async (req: Request, res: Response): Promise<void> => {
             return;
         }
         const newBlog = new Blog({ title, post });
-        const savedBlog = await newBlog.save();
-
-        res.status(201).json(savedBlog);
-    } catch (err) { 
+        res.status(201).json({ message: "Blog successfully published" });
+        await newBlog.save();
+    } catch (err) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
 export const getAllBlogs = async (req: Request, res: Response) => {
     try {
-        const blogpost = await Blog.find();
+        const blogpost = await Blog.find().sort({ createdAt: -1 });
 
         if (!blogpost || blogpost.length === 0) {
-            res.status(400).json({ error: "Your Blogs is empty" });
-            return;
+            return res.status(200).json({ message: "No blogs yet", blogs: [] });
         }
+
         res.status(200).json(blogpost);
     } catch (err) {
         console.error("Error fetching items:", err);
@@ -35,7 +34,7 @@ export const getAllBlogs = async (req: Request, res: Response) => {
 
 export const getBlogsById = async (req: Request, res: Response) => {
     try {
-        const  id  = req.params.id;
+        const id = req.params.id;
         const blogexist = await Blog.findById(id);
         if (!blogexist) {
             return res.status(400).json({ error: "blog post not found" });
@@ -51,7 +50,7 @@ export const getBlogsById = async (req: Request, res: Response) => {
 
 export const getBlog = async (req: Request, res: Response) => {
     try {
-        const  id  = req.params.id;
+        const id = req.params.id;
         const blogexist = await Blog.findById(id);
         if (!blogexist) {
             return res.status(400).json({ error: "blog post not found" });
@@ -67,9 +66,9 @@ export const getBlog = async (req: Request, res: Response) => {
 
 export const updateBlogsById = async (req: Request, res: Response) => {
     try {
-        const id  = req.params.id;
+        const id = req.params.id;
         const { title, post } = req.body;
-        
+
         const blogexist = await Blog.findById(id);
         if (!blogexist) {
             return res.status(400).json({ error: "blog post not found" });
